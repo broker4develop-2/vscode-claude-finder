@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.2.0] - 2026-04-15
+### Added
+- Inline folder expansion in the Global view (no more jumping to Finder)
+- Right-click context menu on files / folders / repos: Reveal in Finder, Open in Integrated Terminal, Copy Path, Copy Relative Path, Rename, Delete (to Trash)
+- Shared tree-item module (`items.ts`) reused by Global, Repo, and Project views
+
 ## [0.1.3] - 2026-04-15
 ### Changed
 - Removed personal default paths from `scanRoots`

@@ -2,7 +2,7 @@
   "name": "claude-settings-manager",
   "displayName": "Claude Settings Manager",
   "description": "One sidebar to browse and edit all your Claude Code settings — global ~/.claude config, MCP servers, current project, and every git repo's CLAUDE.md / AGENTS.md / .claude/ files.",
-  "version": "0.1.3",
+  "version": "0.2.0",
   "publisher": "broker4develop",
   "license": "MIT",
   "engines": {
@@ -60,7 +60,13 @@
       { "command": "claudeSettings.revealInFinder", "title": "Claude: Reveal in Finder" },
       { "command": "claudeSettings.addScanRoot", "title": "Claude: Add Scan Root", "icon": "$(add)" },
       { "command": "claudeSettings.removeScanRoot", "title": "Claude: Remove Scan Root" },
-      { "command": "claudeSettings.openRepoFolder", "title": "Claude: Open Repo in New Window", "icon": "$(window)" }
+      { "command": "claudeSettings.openRepoFolder", "title": "Claude: Open Repo in New Window", "icon": "$(window)" },
+      { "command": "claudeSettings.revealItem", "title": "Reveal in Finder" },
+      { "command": "claudeSettings.copyPath", "title": "Copy Path" },
+      { "command": "claudeSettings.copyRelativePath", "title": "Copy Relative Path" },
+      { "command": "claudeSettings.openInTerminal", "title": "Open in Integrated Terminal" },
+      { "command": "claudeSettings.deleteItem", "title": "Delete" },
+      { "command": "claudeSettings.renameItem", "title": "Rename" }
     ],
     "menus": {
       "view/title": [
@@ -71,7 +77,14 @@
         { "command": "claudeSettings.refresh", "when": "view == claudeSettings.repos", "group": "navigation@2" }
       ],
       "view/item/context": [
-        { "command": "claudeSettings.openRepoFolder", "when": "view == claudeSettings.repos && viewItem == repo", "group": "inline" }
+        { "command": "claudeSettings.openRepoFolder", "when": "view == claudeSettings.repos && viewItem == repo", "group": "inline" },
+        { "command": "claudeSettings.openRepoFolder", "when": "viewItem == repo", "group": "navigation@1" },
+        { "command": "claudeSettings.revealItem", "when": "viewItem == file || viewItem == dir || viewItem == repo", "group": "navigation@2" },
+        { "command": "claudeSettings.openInTerminal", "when": "viewItem == dir || viewItem == repo", "group": "navigation@3" },
+        { "command": "claudeSettings.copyPath", "when": "viewItem == file || viewItem == dir || viewItem == repo", "group": "5_cutcopypaste@1" },
+        { "command": "claudeSettings.copyRelativePath", "when": "viewItem == file || viewItem == dir || viewItem == repo", "group": "5_cutcopypaste@2" },
+        { "command": "claudeSettings.renameItem", "when": "viewItem == file || viewItem == dir", "group": "7_modification@1" },
+        { "command": "claudeSettings.deleteItem", "when": "viewItem == file || viewItem == dir", "group": "7_modification@2" }
       ]
     },
     "configuration": {

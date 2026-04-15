@@ -60,6 +60,61 @@ export function activate(ctx: vscode.ExtensionContext) {
       if (!item?.repoPath) return;
       await vscode.commands.executeCommand('vscode.openFolder', vscode.Uri.file(item.repoPath), { forceNewWindow: true });
     }),
+    vscode.commands.registerCommand('claudeSettings.revealItem', async (item: vscode.TreeItem) => {
+      const uri = item?.resourceUri;
+      if (uri) await vscode.commands.executeCommand('revealFileInOS', uri);
+    }),
+    vscode.commands.registerCommand('claudeSettings.copyPath', async (item: vscode.TreeItem) => {
+      const uri = item?.resourceUri;
+      if (uri) {
+        await vscode.env.clipboard.writeText(uri.fsPath);
+        vscode.window.setStatusBarMessage(`Copied: ${uri.fsPath}`, 2000);
+      }
+    }),
+    vscode.commands.registerCommand('claudeSettings.copyRelativePath', async (item: vscode.TreeItem) => {
+      const uri = item?.resourceUri;
+      if (!uri) return;
+      const ws = vscode.workspace.getWorkspaceFolder(uri);
+      const rel = ws ? path.relative(ws.uri.fsPath, uri.fsPath) : uri.fsPath;
+      await vscode.env.clipboard.writeText(rel);
+      vscode.window.setStatusBarMessage(`Copied: ${rel}`, 2000);
+    }),
+    vscode.commands.registerCommand('claudeSettings.openInTerminal', async (item: vscode.TreeItem) => {
+      const uri = item?.resourceUri;
+      if (!uri) return;
+      const term = vscode.window.createTerminal({ cwd: uri.fsPath, name: path.basename(uri.fsPath) });
+      term.show();
+    }),
+    vscode.commands.registerCommand('claudeSettings.renameItem', async (item: vscode.TreeItem) => {
+      const uri = item?.resourceUri;
+      if (!uri) return;
+      const oldName = path.basename(uri.fsPath);
+      const input = await vscode.window.showInputBox({ prompt: 'New name', value: oldName });
+      if (!input || input === oldName) return;
+      const target = path.join(path.dirname(uri.fsPath), input);
+      try {
+        fs.renameSync(uri.fsPath, target);
+        global.refresh(); mcp.refresh(); project.refresh(); repos.refresh();
+      } catch (e: any) {
+        vscode.window.showErrorMessage(`Rename failed: ${e.message}`);
+      }
+    }),
+    vscode.commands.registerCommand('claudeSettings.deleteItem', async (item: vscode.TreeItem) => {
+      const uri = item?.resourceUri;
+      if (!uri) return;
+      const name = path.basename(uri.fsPath);
+      const confirm = await vscode.window.showWarningMessage(
+        `Delete "${name}"? This moves it to the Trash.`,
+        { modal: true }, 'Delete'
+      );
+      if (confirm !== 'Delete') return;
+      try {
+        await vscode.workspace.fs.delete(uri, { recursive: true, useTrash: true });
+        global.refresh(); mcp.refresh(); project.refresh(); repos.refresh();
+      } catch (e: any) {
+        vscode.window.showErrorMessage(`Delete failed: ${e.message}`);
+      }
+    }),
     vscode.commands.registerCommand('claudeSettings.openFile', async (target: string) => {
       if (!target) return;
       if (!exists(target)) {

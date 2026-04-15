@@ -1,10 +1,9 @@
 import * as vscode from 'vscode';
 import * as path from 'path';
-import * as fs from 'fs';
 import { findGitRepos, hasClaudeConfig, autoDetectRoots } from '../util/scan';
 import { projectFiles } from '../paths';
 import { exists } from '../util/fs';
-import { FileItem } from './globalProvider';
+import { FileItem, DirItem, dirChildren } from './items';
 
 export class RepoItem extends vscode.TreeItem {
   constructor(public readonly repoPath: string) {
@@ -15,15 +14,6 @@ export class RepoItem extends vscode.TreeItem {
     this.tooltip = repoPath;
     this.resourceUri = vscode.Uri.file(repoPath);
     this.contextValue = 'repo';
-  }
-}
-
-export class DirItem extends vscode.TreeItem {
-  constructor(label: string, public readonly dirPath: string) {
-    super(label, vscode.TreeItemCollapsibleState.Collapsed);
-    this.resourceUri = vscode.Uri.file(dirPath);
-    this.iconPath = new vscode.ThemeIcon('folder');
-    this.contextValue = 'dir';
   }
 }
 
@@ -39,7 +29,7 @@ export class ReposProvider implements vscode.TreeDataProvider<Node> {
   getChildren(element?: Node): Node[] {
     if (!element) return this.rootRepos();
     if (element instanceof RepoItem) return this.repoFiles(element.repoPath);
-    if (element instanceof DirItem) return this.dirChildren(element.dirPath);
+    if (element instanceof DirItem) return dirChildren(element.dirPath);
     return [];
   }
 
@@ -91,31 +81,5 @@ export class ReposProvider implements vscode.TreeDataProvider<Node> {
       out.push(empty);
     }
     return out;
-  }
-
-  private dirChildren(dirPath: string): Node[] {
-    let entries: fs.Dirent[];
-    try {
-      entries = fs.readdirSync(dirPath, { withFileTypes: true });
-    } catch {
-      return [];
-    }
-    entries.sort((a, b) => {
-      if (a.isDirectory() !== b.isDirectory()) return a.isDirectory() ? -1 : 1;
-      return a.name.localeCompare(b.name);
-    });
-    const items: Node[] = [];
-    for (const e of entries) {
-      const full = path.join(dirPath, e.name);
-      if (e.isDirectory()) {
-        items.push(new DirItem(e.name, full));
-      } else {
-        const icon = e.name.endsWith('.json') ? 'json'
-          : e.name.endsWith('.md') ? 'book'
-          : 'file';
-        items.push(new FileItem(e.name, full, icon));
-      }
-    }
-    return items;
   }
 }
