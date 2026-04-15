@@ -1,5 +1,10 @@
 # Changelog
 
+## [0.1.3] - 2026-04-15
+### Changed
+- Removed personal default paths from `scanRoots`
+- Added `claudeSettings.autoDetectScanRoots` (default `true`) that auto-detects common dev folders under `~` (workspace, projects, code, dev, src, repos, work, Documents/GitHub, …)
+
 ## [0.1.2] - 2026-04-15
 ### Changed
 - Rewrote Marketplace description and README to cover the Repo view and per-repo config editing

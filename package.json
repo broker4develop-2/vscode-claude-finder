@@ -2,7 +2,7 @@
   "name": "claude-settings-manager",
   "displayName": "Claude Settings Manager",
   "description": "One sidebar to browse and edit all your Claude Code settings — global ~/.claude config, MCP servers, current project, and every git repo's CLAUDE.md / AGENTS.md / .claude/ files.",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "publisher": "broker4develop",
   "license": "MIT",
   "engines": {
@@ -80,8 +80,13 @@
         "claudeSettings.scanRoots": {
           "type": "array",
           "items": { "type": "string" },
-          "default": ["~/workspace-personal", "~/workspace"],
-          "description": "Folders to scan for git repositories. Use ~ for home directory."
+          "default": [],
+          "description": "Extra folders to scan for git repositories. Combined with auto-detected common dev folders (workspace, projects, code, dev, src, repos, work, Documents/GitHub, etc.) under your home directory."
+        },
+        "claudeSettings.autoDetectScanRoots": {
+          "type": "boolean",
+          "default": true,
+          "description": "Auto-detect common dev folders (workspace, projects, code, dev, src, repos, work, Documents/GitHub, …) under your home directory in addition to scanRoots."
         },
         "claudeSettings.scanDepth": {
           "type": "number",

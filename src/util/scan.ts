@@ -7,6 +7,31 @@ export function expandHome(p: string): string {
   return p;
 }
 
+const COMMON_DEV_FOLDERS = [
+  'workspace', 'workspace-personal', 'workspaces',
+  'projects', 'Projects',
+  'code', 'Code',
+  'dev', 'Dev', 'Development',
+  'src', 'Source',
+  'repos', 'Repos', 'repositories',
+  'git', 'Git',
+  'work', 'Work',
+  'Documents/GitHub',
+  'Documents/Projects'
+];
+
+export function autoDetectRoots(): string[] {
+  const home = os.homedir();
+  const found: string[] = [];
+  for (const name of COMMON_DEV_FOLDERS) {
+    const full = path.join(home, name);
+    try {
+      if (fs.statSync(full).isDirectory()) found.push(full);
+    } catch { /* skip */ }
+  }
+  return found;
+}
+
 const SKIP = new Set([
   'node_modules', 'dist', 'build', '.next', '.turbo', '.cache',
   'target', 'venv', '.venv', '__pycache__', '.idea', '.vscode-test',

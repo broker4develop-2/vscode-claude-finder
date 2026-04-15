@@ -1,7 +1,7 @@
 import * as vscode from 'vscode';
 import * as path from 'path';
 import * as fs from 'fs';
-import { findGitRepos, hasClaudeConfig } from '../util/scan';
+import { findGitRepos, hasClaudeConfig, autoDetectRoots } from '../util/scan';
 import { projectFiles } from '../paths';
 import { exists } from '../util/fs';
 import { FileItem } from './globalProvider';
@@ -45,12 +45,17 @@ export class ReposProvider implements vscode.TreeDataProvider<Node> {
 
   private rootRepos(): Node[] {
     const cfg = vscode.workspace.getConfiguration('claudeSettings');
-    const roots = cfg.get<string[]>('scanRoots', []);
+    const userRoots = cfg.get<string[]>('scanRoots', []);
+    const autoDetect = cfg.get<boolean>('autoDetectScanRoots', true);
     const depth = cfg.get<number>('scanDepth', 3);
     const onlyWithConfig = cfg.get<boolean>('showOnlyReposWithClaudeConfig', false);
 
+    const rootSet = new Set<string>(userRoots);
+    if (autoDetect) autoDetectRoots().forEach((r) => rootSet.add(r));
+    const roots = [...rootSet];
+
     if (!roots.length) {
-      const empty = new vscode.TreeItem('No scan roots configured — click + to add');
+      const empty = new vscode.TreeItem('No dev folders detected — click + to add a scan root');
       empty.iconPath = new vscode.ThemeIcon('info');
       empty.command = { command: 'claudeSettings.addScanRoot', title: 'Add' };
       return [empty];

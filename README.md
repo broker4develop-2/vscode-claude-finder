@@ -38,7 +38,8 @@ Current workspace's Claude config (`CLAUDE.md`, `AGENTS.md`, `.claude/*`).
 
 | Setting                                        | Default                               | Description                                              |
 | ---------------------------------------------- | ------------------------------------- | -------------------------------------------------------- |
-| `claudeSettings.scanRoots`                     | `~/workspace-personal`, `~/workspace` | Folders to scan for git repos                            |
+| `claudeSettings.scanRoots`                     | `[]`                                  | Extra folders to scan for git repos                      |
+| `claudeSettings.autoDetectScanRoots`           | `true`                                | Auto-detect `~/workspace`, `~/projects`, `~/code`, `~/dev`, `~/src`, `~/repos`, `~/work`, `~/Documents/GitHub`, etc. |
 | `claudeSettings.scanDepth`                     | `3`                                   | Max directory depth for the scan                         |
 | `claudeSettings.showOnlyReposWithClaudeConfig` | `false`                               | Hide repos that have no CLAUDE.md / AGENTS.md / .claude/ |
 
