@@ -2,7 +2,7 @@
   "name": "claude-settings-manager",
   "displayName": "Claude Settings Manager",
   "description": "Manage Claude Code global, MCP, and project settings from one VSCode sidebar.",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "publisher": "broker4develop",
   "license": "MIT",
   "engines": {
@@ -14,13 +14,14 @@
   "icon": "media/icon.png",
   "repository": {
     "type": "git",
-    "url": "https://github.com/your-org/vscode-claude-finder.git"
+    "url": "https://github.com/broker4develop-2/vscode-claude-finder"
   },
   "main": "./dist/extension.js",
   "activationEvents": [
     "onView:claudeSettings.global",
     "onView:claudeSettings.mcp",
-    "onView:claudeSettings.project"
+    "onView:claudeSettings.project",
+    "onView:claudeSettings.repos"
   ],
   "contributes": {
     "viewsContainers": {
@@ -35,6 +36,7 @@
     "views": {
       "claudeSettings": [
         { "id": "claudeSettings.global", "name": "Global" },
+        { "id": "claudeSettings.repos", "name": "Repo" },
         { "id": "claudeSettings.mcp", "name": "MCP Servers" },
         { "id": "claudeSettings.project", "name": "Project" }
       ]
@@ -43,14 +45,43 @@
       { "command": "claudeSettings.refresh", "title": "Claude: Refresh", "icon": "$(refresh)" },
       { "command": "claudeSettings.openFile", "title": "Claude: Open File" },
       { "command": "claudeSettings.createIfMissing", "title": "Claude: Create If Missing" },
-      { "command": "claudeSettings.revealInFinder", "title": "Claude: Reveal in Finder" }
+      { "command": "claudeSettings.revealInFinder", "title": "Claude: Reveal in Finder" },
+      { "command": "claudeSettings.addScanRoot", "title": "Claude: Add Scan Root", "icon": "$(add)" },
+      { "command": "claudeSettings.removeScanRoot", "title": "Claude: Remove Scan Root" },
+      { "command": "claudeSettings.openRepoFolder", "title": "Claude: Open Repo in New Window", "icon": "$(window)" }
     ],
     "menus": {
       "view/title": [
         { "command": "claudeSettings.refresh", "when": "view == claudeSettings.global", "group": "navigation" },
         { "command": "claudeSettings.refresh", "when": "view == claudeSettings.mcp", "group": "navigation" },
-        { "command": "claudeSettings.refresh", "when": "view == claudeSettings.project", "group": "navigation" }
+        { "command": "claudeSettings.refresh", "when": "view == claudeSettings.project", "group": "navigation" },
+        { "command": "claudeSettings.addScanRoot", "when": "view == claudeSettings.repos", "group": "navigation@1" },
+        { "command": "claudeSettings.refresh", "when": "view == claudeSettings.repos", "group": "navigation@2" }
+      ],
+      "view/item/context": [
+        { "command": "claudeSettings.openRepoFolder", "when": "view == claudeSettings.repos && viewItem == repo", "group": "inline" }
       ]
+    },
+    "configuration": {
+      "title": "Claude Settings Manager",
+      "properties": {
+        "claudeSettings.scanRoots": {
+          "type": "array",
+          "items": { "type": "string" },
+          "default": ["~/workspace-personal", "~/workspace"],
+          "description": "Folders to scan for git repositories. Use ~ for home directory."
+        },
+        "claudeSettings.scanDepth": {
+          "type": "number",
+          "default": 3,
+          "description": "Maximum depth to search for .git folders inside scan roots."
+        },
+        "claudeSettings.showOnlyReposWithClaudeConfig": {
+          "type": "boolean",
+          "default": false,
+          "description": "If true, only list repos that already have a CLAUDE.md, AGENTS.md, or .claude/ folder."
+        }
+      }
     },
     "jsonValidation": [
       {

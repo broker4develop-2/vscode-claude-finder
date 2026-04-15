@@ -6,5 +6,11 @@ tsconfig.json
 esbuild.js
 .eslintrc.json
 .gitignore
+.gitattributes
 PLAN.md
 **/*.map
+.history/**
+.omc/**
+.claude/**
+.DS_Store
+*.vsix
