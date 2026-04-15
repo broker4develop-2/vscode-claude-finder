@@ -1,0 +1,78 @@
+{
+  "name": "claude-settings-manager",
+  "displayName": "Claude Settings Manager",
+  "description": "Manage Claude Code global, MCP, and project settings from one VSCode sidebar.",
+  "version": "0.0.1",
+  "publisher": "broker4develop",
+  "license": "MIT",
+  "engines": {
+    "vscode": "^1.85.0",
+    "node": ">=18"
+  },
+  "categories": ["Other"],
+  "keywords": ["claude", "claude-code", "mcp", "settings", "anthropic"],
+  "icon": "media/icon.png",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/your-org/vscode-claude-finder.git"
+  },
+  "main": "./dist/extension.js",
+  "activationEvents": [
+    "onView:claudeSettings.global",
+    "onView:claudeSettings.mcp",
+    "onView:claudeSettings.project"
+  ],
+  "contributes": {
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "claudeSettings",
+          "title": "Claude Settings",
+          "icon": "media/icon.svg"
+        }
+      ]
+    },
+    "views": {
+      "claudeSettings": [
+        { "id": "claudeSettings.global", "name": "Global" },
+        { "id": "claudeSettings.mcp", "name": "MCP Servers" },
+        { "id": "claudeSettings.project", "name": "Project" }
+      ]
+    },
+    "commands": [
+      { "command": "claudeSettings.refresh", "title": "Claude: Refresh", "icon": "$(refresh)" },
+      { "command": "claudeSettings.openFile", "title": "Claude: Open File" },
+      { "command": "claudeSettings.createIfMissing", "title": "Claude: Create If Missing" },
+      { "command": "claudeSettings.revealInFinder", "title": "Claude: Reveal in Finder" }
+    ],
+    "menus": {
+      "view/title": [
+        { "command": "claudeSettings.refresh", "when": "view == claudeSettings.global", "group": "navigation" },
+        { "command": "claudeSettings.refresh", "when": "view == claudeSettings.mcp", "group": "navigation" },
+        { "command": "claudeSettings.refresh", "when": "view == claudeSettings.project", "group": "navigation" }
+      ]
+    },
+    "jsonValidation": [
+      {
+        "fileMatch": "**/.claude/settings*.json",
+        "url": "https://json.schemastore.org/base.json"
+      }
+    ]
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run build",
+    "build": "node esbuild.js --production",
+    "watch": "node esbuild.js --watch",
+    "lint": "eslint src --ext ts",
+    "package": "vsce package",
+    "publish": "vsce publish"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "@types/vscode": "^1.85.0",
+    "@vscode/vsce": "^2.24.0",
+    "esbuild": "^0.20.0",
+    "eslint": "^8.57.0",
+    "typescript": "^5.4.0"
+  }
+}
