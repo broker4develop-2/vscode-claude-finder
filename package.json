@@ -2,7 +2,7 @@
   "name": "claude-settings-manager",
   "displayName": "Claude Settings Manager",
   "description": "One sidebar to browse and edit all your Claude Code settings — global ~/.claude config, MCP servers, current project, and every git repo's CLAUDE.md / AGENTS.md / .claude/ files.",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "publisher": "broker4develop",
   "license": "MIT",
   "engines": {

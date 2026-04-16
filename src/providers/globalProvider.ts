@@ -19,9 +19,14 @@ export class GlobalProvider implements vscode.TreeDataProvider<Node> {
         new FileItem('CLAUDE.md (global instructions)', GLOBAL_FILES.claudeMd, 'book'),
         new FileItem('settings.json', GLOBAL_FILES.settings, 'gear'),
         new FileItem('settings.local.json', GLOBAL_FILES.settingsLocal, 'gear'),
+        new DirItem('rules/', GLOBAL_FILES.rules, 'law'),
         new DirItem('skills/', GLOBAL_FILES.skills),
         new DirItem('plugins/', GLOBAL_FILES.plugins),
         new DirItem('hooks/', GLOBAL_FILES.hooks),
+        new DirItem('plans/', GLOBAL_FILES.plans, 'note'),
+        new DirItem('todos/', GLOBAL_FILES.todos, 'checklist'),
+        new DirItem('config/', GLOBAL_FILES.config, 'settings-gear'),
+        new DirItem('local/', GLOBAL_FILES.local),
         new DirItem('backups/', GLOBAL_FILES.backups, 'archive'),
         new DirItem('projects/', GLOBAL_FILES.projects, 'folder-library')
       ];

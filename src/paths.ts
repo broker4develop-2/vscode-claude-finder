@@ -14,7 +14,12 @@ export const GLOBAL_FILES = {
   skills: path.join(CLAUDE_DIR, 'skills'),
   plugins: path.join(CLAUDE_DIR, 'plugins'),
   hooks: path.join(CLAUDE_DIR, 'hooks'),
-  projects: path.join(CLAUDE_DIR, 'projects')
+  projects: path.join(CLAUDE_DIR, 'projects'),
+  rules: path.join(CLAUDE_DIR, 'rules'),
+  plans: path.join(CLAUDE_DIR, 'plans'),
+  todos: path.join(CLAUDE_DIR, 'todos'),
+  config: path.join(CLAUDE_DIR, 'config'),
+  local: path.join(CLAUDE_DIR, 'local')
 };
 
 export function projectFiles(workspaceRoot: string) {

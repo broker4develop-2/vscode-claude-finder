@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.2.1] - 2026-04-16
+### Added
+- Global view: rules/, plans/, todos/, config/, local/ directories with dedicated icons
+
 ## [0.2.0] - 2026-04-15
 ### Added
 - Inline folder expansion in the Global view (no more jumping to Finder)
