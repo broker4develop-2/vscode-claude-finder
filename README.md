@@ -1,8 +1,8 @@
 https://marketplace.visualstudio.com/items?itemName=broker4develop.claude-settings-manager
 
-# Claude Settings Manager
+# Claude Code Navigator
 
-One sidebar to browse and edit every Claude Code setting on your machine — your **global** `~/.claude` config, **MCP servers**, the **current project**, and every **git repo's** `CLAUDE.md` / `AGENTS.md` / `.claude/` files.
+Browse and edit every Claude Code config from one VSCode sidebar — your **global** `~/.claude` directory, **MCP servers**, the **current project**, and every **git repo's** `CLAUDE.md` / `AGENTS.md` / `.claude/` files.
 
 Stop hunting for config files across a dozen repos. Open them all from one place.
 

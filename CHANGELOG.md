@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.2.2] - 2026-04-16
+### Changed
+- Rebranded to **Claude Code Navigator** (displayName) for better Marketplace discoverability
+- Rewrote description and expanded keywords (claude code, CLAUDE.md, AGENTS.md, mcp, anthropic, …)
+- Internal extension ID unchanged (`broker4develop.claude-settings-manager`) so existing installs keep working
+
 ## [0.2.1] - 2026-04-16
 ### Added
 - Global view: rules/, plans/, todos/, config/, local/ directories with dedicated icons
