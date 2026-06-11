@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.3.0] - 2026-06-11
+### Added
+- **📊 Usage & cost dashboard** (webview) — today / 7-day / 30-day / all-time cost and token totals, a 30-day daily-cost bar chart, and cost-by-project / cost-by-model breakdowns. Parsed from `~/.claude/projects` session logs with `message.id` de-duplication (resumed/forked sessions no longer double-count).
+- **Status-bar item** showing today's Claude Code spend; click to open the dashboard. Toggle with `claudeSettings.showStatusBar`.
+- **Configurable pricing** via `claudeSettings.pricing` (per-million-token rates keyed by `opus` / `sonnet` / `haiku`), merged over built-in Claude 4.x defaults.
+- **🎛 Manage view** — toggle plugins (`enabledPlugins`) and MCP servers on/off inline, plus a read-only hooks visualizer (event → command). Disabled MCP servers are parked under `_disabledMcpServers` and restored on re-enable.
+### Changed
+- Rebranded the Marketplace description and keywords around usage/cost tracking (the signature feature).
+
 ## [0.2.2] - 2026-04-16
 ### Changed
 - Rebranded to **Claude Code Navigator** (displayName) for better Marketplace discoverability

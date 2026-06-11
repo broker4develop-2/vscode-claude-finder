@@ -5,6 +5,9 @@ import { GlobalProvider } from './providers/globalProvider';
 import { McpProvider } from './providers/mcpProvider';
 import { ProjectProvider } from './providers/projectProvider';
 import { ReposProvider, RepoItem } from './providers/reposProvider';
+import { ManageProvider, PluginItem, McpServerItem } from './providers/manageProvider';
+import { DashboardPanel } from './dashboard/dashboardPanel';
+import { UsageStatusBar } from './statusbar';
 import { exists } from './util/fs';
 
 export function activate(ctx: vscode.ExtensionContext) {
@@ -12,23 +15,42 @@ export function activate(ctx: vscode.ExtensionContext) {
   const mcp = new McpProvider();
   const project = new ProjectProvider();
   const repos = new ReposProvider();
+  const manage = new ManageProvider();
+  const statusBar = new UsageStatusBar();
 
   ctx.subscriptions.push(
     vscode.window.registerTreeDataProvider('claudeSettings.global', global),
     vscode.window.registerTreeDataProvider('claudeSettings.mcp', mcp),
     vscode.window.registerTreeDataProvider('claudeSettings.project', project),
-    vscode.window.registerTreeDataProvider('claudeSettings.repos', repos)
+    vscode.window.registerTreeDataProvider('claudeSettings.repos', repos),
+    vscode.window.registerTreeDataProvider('claudeSettings.manage', manage)
+  );
+
+  statusBar.start(ctx);
+
+  ctx.subscriptions.push(
+    vscode.commands.registerCommand('claudeSettings.openDashboard', () => DashboardPanel.show(ctx)),
+    vscode.commands.registerCommand('claudeSettings.togglePlugin', (item: PluginItem) => manage.togglePlugin(item)),
+    vscode.commands.registerCommand('claudeSettings.toggleMcp', (item: McpServerItem) => {
+      manage.toggleMcp(item);
+      mcp.refresh();
+    })
   );
 
   ctx.subscriptions.push(
     vscode.workspace.onDidChangeConfiguration((e) => {
-      if (e.affectsConfiguration('claudeSettings')) repos.refresh();
+      if (e.affectsConfiguration('claudeSettings')) {
+        repos.refresh();
+        void statusBar.refresh();
+      }
     }),
     vscode.commands.registerCommand('claudeSettings.refresh', () => {
       global.refresh();
       mcp.refresh();
       project.refresh();
       repos.refresh();
+      manage.refresh();
+      void statusBar.refresh();
     }),
     vscode.commands.registerCommand('claudeSettings.addScanRoot', async () => {
       const picked = await vscode.window.showOpenDialog({
@@ -145,6 +167,7 @@ export function activate(ctx: vscode.ExtensionContext) {
     mcp.refresh();
     project.refresh();
     repos.refresh();
+    manage.refresh();
   });
 }
 

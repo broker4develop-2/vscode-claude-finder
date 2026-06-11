@@ -1,8 +1,8 @@
 {
   "name": "claude-settings-manager",
   "displayName": "Claude Code Navigator",
-  "description": "Browse and edit every Claude Code config from one sidebar — global ~/.claude, MCP servers, CLAUDE.md, AGENTS.md, and all your git repos' .claude/ folders.",
-  "version": "0.2.2",
+  "description": "Claude Code usage & cost dashboard plus a config navigator — track tokens/spend, toggle plugins & MCP servers, and browse every CLAUDE.md / AGENTS.md / .claude config from one sidebar.",
+  "version": "0.3.0",
   "publisher": "broker4develop",
   "license": "MIT",
   "engines": {
@@ -24,6 +24,12 @@
     "anthropic",
     "ai",
     "ai assistant",
+    "usage",
+    "token usage",
+    "cost",
+    "cost tracking",
+    "dashboard",
+    "ccusage",
     "config",
     "config manager",
     "settings",
@@ -45,7 +51,10 @@
     "onView:claudeSettings.global",
     "onView:claudeSettings.mcp",
     "onView:claudeSettings.project",
-    "onView:claudeSettings.repos"
+    "onView:claudeSettings.repos",
+    "onView:claudeSettings.manage",
+    "onCommand:claudeSettings.openDashboard",
+    "onStartupFinished"
   ],
   "contributes": {
     "viewsContainers": {
@@ -61,6 +70,7 @@
       "claudeSettings": [
         { "id": "claudeSettings.global", "name": "Global" },
         { "id": "claudeSettings.repos", "name": "Repo" },
+        { "id": "claudeSettings.manage", "name": "Manage" },
         { "id": "claudeSettings.mcp", "name": "MCP Servers" },
         { "id": "claudeSettings.project", "name": "Project" }
       ]
@@ -78,11 +88,17 @@
       { "command": "claudeSettings.copyRelativePath", "title": "Copy Relative Path" },
       { "command": "claudeSettings.openInTerminal", "title": "Open in Integrated Terminal" },
       { "command": "claudeSettings.deleteItem", "title": "Delete" },
-      { "command": "claudeSettings.renameItem", "title": "Rename" }
+      { "command": "claudeSettings.renameItem", "title": "Rename" },
+      { "command": "claudeSettings.openDashboard", "title": "Claude: Open Usage Dashboard", "icon": "$(graph)" },
+      { "command": "claudeSettings.togglePlugin", "title": "Claude: Toggle Plugin", "icon": "$(circle-large-outline)" },
+      { "command": "claudeSettings.toggleMcp", "title": "Claude: Toggle MCP Server", "icon": "$(circle-large-outline)" }
     ],
     "menus": {
       "view/title": [
-        { "command": "claudeSettings.refresh", "when": "view == claudeSettings.global", "group": "navigation" },
+        { "command": "claudeSettings.openDashboard", "when": "view == claudeSettings.global", "group": "navigation@1" },
+        { "command": "claudeSettings.refresh", "when": "view == claudeSettings.global", "group": "navigation@2" },
+        { "command": "claudeSettings.openDashboard", "when": "view == claudeSettings.manage", "group": "navigation@1" },
+        { "command": "claudeSettings.refresh", "when": "view == claudeSettings.manage", "group": "navigation@2" },
         { "command": "claudeSettings.refresh", "when": "view == claudeSettings.mcp", "group": "navigation" },
         { "command": "claudeSettings.refresh", "when": "view == claudeSettings.project", "group": "navigation" },
         { "command": "claudeSettings.addScanRoot", "when": "view == claudeSettings.repos", "group": "navigation@1" },
@@ -96,7 +112,9 @@
         { "command": "claudeSettings.copyPath", "when": "viewItem == file || viewItem == dir || viewItem == repo", "group": "5_cutcopypaste@1" },
         { "command": "claudeSettings.copyRelativePath", "when": "viewItem == file || viewItem == dir || viewItem == repo", "group": "5_cutcopypaste@2" },
         { "command": "claudeSettings.renameItem", "when": "viewItem == file || viewItem == dir", "group": "7_modification@1" },
-        { "command": "claudeSettings.deleteItem", "when": "viewItem == file || viewItem == dir", "group": "7_modification@2" }
+        { "command": "claudeSettings.deleteItem", "when": "viewItem == file || viewItem == dir", "group": "7_modification@2" },
+        { "command": "claudeSettings.togglePlugin", "when": "view == claudeSettings.manage && (viewItem == pluginOn || viewItem == pluginOff)", "group": "inline" },
+        { "command": "claudeSettings.toggleMcp", "when": "view == claudeSettings.manage && (viewItem == mcpOn || viewItem == mcpOff)", "group": "inline" }
       ]
     },
     "configuration": {
@@ -122,6 +140,25 @@
           "type": "boolean",
           "default": false,
           "description": "If true, only list repos that already have a CLAUDE.md, AGENTS.md, or .claude/ folder."
+        },
+        "claudeSettings.showStatusBar": {
+          "type": "boolean",
+          "default": true,
+          "description": "Show today's Claude Code spend in the status bar. Click it to open the usage dashboard."
+        },
+        "claudeSettings.pricing": {
+          "type": "object",
+          "default": {},
+          "markdownDescription": "Override per-million-token prices (USD) used by the usage dashboard. Keyed by a model-id substring (e.g. `opus`, `sonnet`, `haiku`), each with `input`, `output`, `cacheWrite`, `cacheRead`. Example: `{ \"opus\": { \"input\": 15, \"output\": 75, \"cacheWrite\": 18.75, \"cacheRead\": 1.5 } }`. Anything you set is merged over the built-in defaults.",
+          "additionalProperties": {
+            "type": "object",
+            "properties": {
+              "input": { "type": "number" },
+              "output": { "type": "number" },
+              "cacheWrite": { "type": "number" },
+              "cacheRead": { "type": "number" }
+            }
+          }
         }
       }
     },
